@@ -1,0 +1,28 @@
+org: romuloigor
+app: apiproxy
+service: apiproxy
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  profile: default
+  region: us-east-1
+
+package:
+  individually: true
+
+functions:
+  proxy:
+    handler: lambdas/endpoints/proxy.handler
+    events:
+      - http:
+          path: chuck-norris/{proxy+}
+          method: ANY
+          integration: http-proxy
+          request:
+            uri: http://api.icndb.com/{proxy}
+            parameters:
+              paths:
+                proxy: true
